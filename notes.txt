@@ -1,0 +1,603 @@
+#include <iostream>
+using namespace std;
+
+#include "opencv2/opencv.hpp"
+using namespace cv;
+
+void readImage();
+void drawImage();
+void changeImage();
+void split_merge();
+void changeColor();
+void imageAdd();
+void imageMix();
+void resizeImage();
+void moveImage();
+void rotateImage();
+void erode_dilateImage();
+void open_close();
+void top_black_hat();
+void mean_blur();
+void gaussian_blur();
+void median_blur();
+void calcHist();
+void yanmo();
+void zhifangtujunhenghua();
+void zishiyingjunhenghua();
+void sobel();
+void laplacian();
+void match();
+void hough();
+void hough_circle();
+void harris();
+void shi_tomas();
+void sift();
+void fast();
+void orb();
+
+int main() {
+    //读图和存图
+//    readImage();
+    //绘制图形
+//    drawImage();
+//    // 修改图像的属性
+//    changeImage();
+//    // 通道拆分和合并
+//    split_merge();
+//    // 色彩空间的改变
+//    changeColor();
+      // 图像相加
+//    imageAdd();
+      // 图像混合
+//    imageMix();
+      // 图片缩放
+//    resizeImage();
+      // 图片平移
+//    moveImage();
+      // 图像旋转
+//    rotateImage();
+      // 膨胀腐蚀
+    erode_dilateImage();
+    open_close();
+    top_black_hat();
+    // 均值滤波
+    mean_blur();
+    // 高斯滤波
+    gaussian_blur();
+    // 中值滤波
+    median_blur();
+    // 直方图
+    calcHist();
+    // 掩膜
+    yanmo();
+    // 直方图均衡化
+    zhifangtujunhenghua();
+    // 自适应均衡化
+    zishiyingjunhenghua();
+    sobel();
+    laplacian();
+    // 模板匹配
+    match();
+    // 霍夫线检测
+    hough();
+    // 霍夫圆检测
+    hough_circle();
+    harris();
+    shi_tomas();
+    sift();
+    fast();
+    orb();
+
+}
+
+void readImage(){
+    //=============================读图和存图===================================//
+    Mat img = imread("F:\\picture\\boy.png");
+    imshow("image",img);
+    waitKey(0);
+//    imwrite("G:\\test.png", img);
+    //=============================读图和存图====================================//
+}
+
+void drawImage(){
+    //==============================绘制图形====================================//
+    Mat img = imread("F:\\picture\\y.png", 1);
+    Point pt1 = Point(0, 0);
+    Point pt2 = Point(100, 100);
+    line(img, pt1, pt2, Scalar(255, 0, 0), 5);
+
+    Point pt3 = Point(150, 0);
+    Point pt4 = Point(300, 150);
+    rectangle(img, pt3, pt4, Scalar(0, 255, 0), -1);
+
+    Point pt5 = Point(500, 300);
+    circle(img, pt5, 50, Scalar(0, 0, 255), 2);
+
+    Point pt6 = Point(100, 300);
+    putText(img, "openCV", pt6, FONT_HERSHEY_SIMPLEX, 1, Scalar(155, 155, 155), 4);
+    imshow("image", img);
+    waitKey(0);
+    //==============================绘制图形====================================//
+}
+
+void changeImage(){
+    /**
+图像类型：
+       Vec3b        三通道彩色（8位）
+       unsigned char    单通道灰度
+       unsigned short   16位灰度
+       float            32位浮点型
+       Vec2f        双通道32位
+*/
+    Mat img = imread("F:\\picture\\boy.png");
+    Vec3b &bgr = img.at<Vec3b>(100, 100);            // 读取（100，100）的三通道像素
+    int blue = int(bgr[1]);                                 // 读取B通道的值
+    bgr[0] = 0;                                             // 修改B通道的值
+    cout<<"================"<<bgr<<"============="<<blue<<endl;
+}
+
+//
+void split_merge(){
+    /**
+ * 1--bit_depth---比特数---代表8bite,16bites,32bites,64bites---
+ 2--S|U|F--
+S--代表---signed int---有符号整形
+U--代表--unsigned int--无符号整形
+F--代表--float---------单精度浮点型
+3--C<number_of_channels>----
+代表---一张图片的通道数,比如:
+1--灰度图片--grayImg---是--单通道图像
+2--RGB彩色图像---------是--3通道图像
+3--带Alph通道的RGB图像--是--4通道图像
+ */
+    Mat img = Mat(500, 500, CV_8UC3, Scalar(133, 18, 206));
+    cout<<img.size<<"\n"<<img.flags<<"\n"<<img.cols<<"\n"<<img.rows<<"\n"<<img.dims<<"\n"<<img.channels()<<endl;
+    // 拆分通道
+    vector<Mat> planes;
+    split(img, planes);
+    planes[0] = 0;
+    planes[1] = 0;
+    planes[2] = 255;
+    // 通道合并
+    Mat dst;
+    merge(planes,dst);
+    imshow("merge", dst);
+    waitKey(0);
+}
+
+void changeColor(){
+    //色彩空间的改变
+    Mat img = imread("F:\\picture\\boy.png");
+    Mat HSV, gray, Lab, YUV;
+
+    cvtColor(img, HSV, COLOR_BGR2HSV);
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    cvtColor(img, Lab, COLOR_BGR2Lab);
+    cvtColor(img, YUV, COLOR_BGR2YUV);
+    imshow("img", img);
+    imshow("HSV", HSV);
+    imshow("gray", gray);
+    imshow("Lab", Lab);
+    imshow("YUV", YUV);
+    waitKey(0);
+}
+
+
+void imageAdd(){
+    Mat img1 = Mat(500, 500, CV_8UC3, Scalar(155, 0, 0));
+    Mat img2 = Mat(500, 500, CV_8UC3, Scalar(0, 155, 0));
+    Mat img3 = Mat(500, 500, CV_8UC3, Scalar(0, 0, 155));
+    Mat img;
+    add(img1, img3,img);
+    imshow("img", img);
+    waitKey(0);
+}
+
+void imageMix(){
+    Mat img1 = Mat(500, 500, CV_8UC3, Scalar(155, 0, 0));
+    Mat img2 = Mat(500, 500, CV_8UC3, Scalar(0, 0, 155));
+    Mat img;
+    addWeighted(img1, 0.3, img2, 0.7,50,img);
+    imshow("img", img);
+    waitKey(0);
+
+}
+
+void resizeImage(){
+    Mat img = imread("F:\\picture\\boy.png");
+    int cols = img.cols;
+    int rows = img.rows;
+    Mat dst;
+//    Size dsize = Size(cols * 2, rows * 2);
+    Size dsize;
+//    resize(img, dst, dsize, CV_INTER_CUBIC);
+    resize(img, dst, dsize, 0.5, 0.5, CV_INTER_CUBIC);
+    imshow("origin", img);
+    imshow("img", dst);
+    waitKey(0);
+}
+
+void moveImage(){
+    Mat img = imread("F:\\picture\\boy.png");
+    Mat dst;
+    Mat move_mat = Mat::zeros(2, 3, CV_32FC1);
+    move_mat.at<float>(0, 0) = 1;
+    move_mat.at<float>(0,2) = 100;
+    move_mat.at<float>(1, 1) = 1;
+    move_mat.at<float>(1, 2) = 50;
+    Size dsize = Size(0, 0);
+    warpAffine(img, dst, move_mat, dsize);
+    imshow("move", dst);
+    waitKey(0);
+}
+
+void rotateImage(){
+    Mat img = imread("F:\\picture\\boy.png");
+    Mat dst;
+    Point center = Point(img.cols / 2, img.rows / 2);
+    Mat mat = getRotationMatrix2D(center,45,1);
+    Size dsize = Size(img.cols, img.rows);
+    warpAffine(img, dst, mat, dsize);
+    imshow("rotate", dst);
+    waitKey(0);
+}
+
+// 膨胀和腐蚀操作
+void erode_dilateImage(){
+    Mat img, ero, dil, element;
+    img = imread("F:\\picture\\number.png");
+    // 生成一个10x10的卷积核
+    element = getStructuringElement(MORPH_RECT, Size(10, 10));
+    erode(img, ero, element);
+    dilate(img, dil, element, Point(-1, -1));
+    imshow("origin", img);
+    imshow("erode", ero);
+    imshow("dilate", dil);
+    waitKey(0);
+}
+
+// 开运算：先腐蚀再膨胀~ 作用：去除噪声
+void open_close(){
+    Mat img1, img2, open, close,element;
+    img1 = imread("F:\\picture\\boy.png");
+    img2 = imread("F:\\picture\\number.png");
+    element = getStructuringElement(MORPH_RECT, Size(10, 10));
+    //使用morphologyEx 进行开闭运算操作，第三个参数指定开运算还是闭运算
+    morphologyEx(img1, open, MORPH_OPEN, element);
+    morphologyEx(img1, close, MORPH_CLOSE, element);
+    imshow("origin", img1);
+    imshow("open", open);
+    imshow("close", close);
+    waitKey(0);
+}
+
+// 礼帽运算：原图像与“开运算”的结果图之差~~~~即：topHat(src,element) = src - open(src,element);
+// 黑帽运算：”闭运算“的结果图与原图像之差~~~~即：blackHat(src,element) = close(src,element) - src;
+void top_black_hat(){
+    Mat img1, img2, tophat, blackhat,element;
+    img1 = imread("F:\\picture\\butterfly.png");
+    //使用morphologyEx 进行礼帽、黑帽运算操作，第三个参数指定礼帽运算还是黑帽运算
+    element = getStructuringElement(MORPH_RECT, Size(10, 10));
+    morphologyEx(img1, tophat, MORPH_TOPHAT, element);
+    morphologyEx(img1, blackhat, MORPH_BLACKHAT, element);
+    imshow("origin", img1);
+    imshow("tophat", tophat);
+    imshow("blackhat", blackhat);
+    waitKey(0);
+}
+
+// 图像平滑：去除高频信息，保留低频信息~~~~均值滤波、高斯滤波、中值滤波、双边滤波
+/**
+ *  均值滤波优点：算法简单，计算速度快~~~缺点：去噪的同时去除了很多细节部分，将图像变得模糊
+ *  高斯滤波：与均值滤波相似，但对每个像素都进行了加权，去除高斯噪声
+ *  中值滤波：用像素点邻域灰度值的中值代替该像素灰度值，对椒盐噪声尤其有用，因为它不依赖于邻域内那些与典型值差别很大的值
+ */
+//均值滤波
+void mean_blur(){
+    Mat img, dst;
+    img = imread("F:\\picture\\11.png");
+    blur(img, dst, Size(5, 5));
+    imshow("origin", img);
+    imshow("blur", dst);
+    waitKey(0);
+}
+
+// 高斯滤波
+void gaussian_blur(){
+    Mat img,dst;
+    img = imread("F:\\picture\\girl.png");
+    // 参数四是在x方向的sigma，如果没有参数五，则默认在y方向sigma和参数四相同
+    GaussianBlur(img, dst, Size(5, 5), 3, 3);
+    imshow("origin", img);
+    imshow("gaussianBlur", dst);
+    waitKey(0);
+}
+
+// 中值滤波
+void median_blur(){
+    Mat img, dst;
+    img = imread("F:\\picture\\girl.png");
+    medianBlur(img, dst, 3);
+    imshow("origin", img);
+    imshow("medianBlur", dst);
+    waitKey(0);
+}
+
+void calcHist(){
+    Mat src, dst;
+    src = imread("F:\\picture\\butterfly.png");
+
+    vector<Mat> bgr_planes;
+    split(src, bgr_planes);
+
+    int histSize = 256;
+    float range[] = { 0,256 };
+    const float *histRanges = { range };
+
+    Mat b_hist, g_hist, r_hist;
+    // bgr_planes:图片第几个通道~~~第二个参数：输入图像的个数~~~第三个参数：需要统计直方图的第几通道~~~第四个参数：掩膜
+    // 第五个参数：输出的直方图数组~~~第六个参数：需要统计直方图通道的个数~~~第七个参数：直方图分成多少个区间~~~第八个参数：统计像素值得区间
+    calcHist(&bgr_planes[0], 1, 0, Mat(), b_hist, 1, &histSize, &histRanges, true, false);
+    calcHist(&bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRanges, true, false);
+    calcHist(&bgr_planes[2], 1, 0, Mat(), r_hist, 1, &histSize, &histRanges, true, false);
+
+    int hist_h = 400;
+    int hist_w = 512;
+    int bin_w = hist_w / histSize;
+    Mat histImage(hist_w, hist_h, CV_8UC3, Scalar(0, 0, 0));
+    normalize(b_hist, b_hist, 0, hist_h, NORM_MINMAX, -1, Mat());
+    normalize(g_hist, g_hist, 0, hist_h, NORM_MINMAX, -1, Mat());
+    normalize(r_hist, r_hist, 0, hist_h, NORM_MINMAX, -1, Mat());
+
+    for (int i = 0; i < histSize; i++)
+    {
+        line(histImage, Point((i - 1)*bin_w, hist_h - cvRound(b_hist.at<float>(i - 1))),
+             Point((i)*bin_w, hist_h - cvRound(b_hist.at<float>(i))), Scalar(255, 0, 0), 2, LINE_AA);
+        line(histImage, Point((i - 1)*bin_w, hist_h - cvRound(g_hist.at<float>(i - 1))),
+             Point((i)*bin_w, hist_h - cvRound(g_hist.at<float>(i))), Scalar(0, 255, 0), 2, LINE_AA);
+        line(histImage, Point((i - 1)*bin_w, hist_h - cvRound(r_hist.at<float>(i - 1))),
+             Point((i)*bin_w, hist_h - cvRound(r_hist.at<float>(i))), Scalar(0, 0, 255), 2, LINE_AA);
+    }
+
+    imshow("histImage", histImage);
+    waitKey(0);
+
+}
+
+void yanmo(){
+    Mat img, src;
+    img = imread("F:\\picture\\butterfly.png");
+    Mat kernel = (Mat_<char>(3, 3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
+    filter2D(img, src, img.depth(), kernel);
+    imshow("origin", img);
+    imshow("filter2D", src);
+    waitKey(0);
+}
+
+// equalizeHist只能对单通道的灰度图进行均衡化
+// 直方图均衡化的缺点：如果前景较亮，背景较暗，进行直方图均衡化后，对背景进行了高亮之后，很可能前景会亮的失去很多细节信息，比如看不清轮廓
+void zhifangtujunhenghua(){
+    Mat img, src;
+    img = imread("F:\\picture\\girl_origin.png",0);
+    equalizeHist(img, src);
+    imshow("origin", img);
+    imshow("equalizeHist", src);
+    waitKey(0);
+}
+
+// 自适应均衡化：将整副图像分成很多小块，对每一个小块进行直方图均衡化，同时设置一个对比度上限，如果超过上限，就将其中的像素点均匀分散到其他的组距（bins）中，
+// 最后进行拼接，拼接的时候进行双线性插值来削弱拼接时候边界之间的差别
+// 优点：既增强了图片的对比度，也保留了原本高亮部分的细节
+void zishiyingjunhenghua(){
+    Mat img, dst;
+    img = imread("F:\\picture\\diaosu.png", 0);
+    Ptr<CLAHE> ptr = createCLAHE(5.0, Size(8, 8));
+    ptr->apply(img, dst);
+    imshow("origin", img);
+    imshow("zishiying", dst);
+    waitKey(0);
+}
+
+// sobel算子
+void sobel(){
+    Mat img, dst_x, dst_y, abs_x, abs_y, src;
+    int ddepth = CV_16S;
+    img = imread("F:\\picture\\horse.png");
+    // sobel第三个参数：将图片转为uint16进行边缘检测，因为uint8对图片进行边缘检测时，前一个像素减去后一个像素可能会出现负数或者超过255的值
+    // 所以先转为uint16，梯度求导之后再转为uint8,~~~~~第四个第五个参数：对x方向和y方向求导，1未求导，0为不求导，第六个参数：卷积核大小
+    Sobel(img, dst_x, ddepth, 1, 0, 3);
+    // 转为uint8
+    convertScaleAbs(dst_x, abs_x);
+    Sobel(img, dst_y, ddepth, 0, 1, 3);
+    convertScaleAbs(dst_y, abs_y);
+    addWeighted(abs_x, 0.5, abs_y, 0.5, 0, src);
+    // scharr算子
+    Scharr(img, dst_x1, ddepth, 1, 0, 3);
+    convertScaleAbs(dst_x1, abs_x1);
+    Scharr(img, dst_y1, ddepth, 0, 1, 3);
+    convertScaleAbs(dst_y1, abs_y1);
+    addWeighted(abs_x1, 0.5, abs_y1, 0.5, 0, src1);
+
+    imshow("origin", img);
+
+    imshow("sobel", src);
+    waitKey(0);
+
+}
+
+// laplacian算子是利用二阶导数来检测边缘
+void laplacian(){
+    Mat img, dst,abs;
+    int ddepth = CV_16S;
+    img = imread("F:\\picture\\horse.png", 0);
+    Laplacian(img, dst, ddepth, 3);
+    convertScaleAbs(dst, abs);
+    imshow("laplacian", abs);
+    waitKey(0);
+}
+
+// canny算子
+void canny(){
+    Mat img,dst;
+    img = imread("F:\\picture\\horse.png");
+    // threshold1：较小的阈值将间断的边缘连接起来
+    // threshold2：较大的阈值检测图像中明显的边缘
+    Canny(img, dst, 0, 60);
+    imshow("origin", img);
+    imshow("canny", dst);
+    waitKey(0);
+}
+
+/**
+ *  模板匹配的方法：
+ *  1、cv::TM_SQDIFF：该方法使用平方差进行匹配，因此最佳的匹配结果在结果为0处，值越大匹配结果越差。
+    2、cv::TM_SQDIFF_NORMED：该方法使用归一化的平方差进行匹配，最佳匹配也在结果为0处。
+    3、cv::TM_CCORR：相关性匹配方法，该方法使用源图像与模板图像的卷积结果进行匹配，因此，最佳匹配位置在值最大处，值越小匹配结果越差。
+    4、cv::TM_CCORR_NORMED：归一化的相关性匹配方法，与相关性匹配方法类似，最佳匹配位置也是在值最大处。
+    5、cv::TM_CCOEFF：相关性系数匹配方法，该方法使用源图像与其均值的差、模板与其均值的差二者之间的相关性进行匹配，最佳匹配结果在值等于1处，最差匹配结果在值等于-1处，值等于0直接表示二者不相关。
+    6、cv::TM_CCOEFF_NORMED：归一化的相关性系数匹配方法，正值表示匹配的结果较好，负值则表示匹配的效果较差，也是值越大，匹配效果也好。
+ */
+void match(){
+    Mat img1, img2, result;
+    double minVal,maxVal;
+    Point minLoc, maxLoc;
+    img1 = imread("F:\\picture\\na.png");
+    img2 = imread("F:\\picture\\eye.png");
+    matchTemplate(img1, img2, result, TM_SQDIFF);
+    // minVal和maxVal表示相似度，minLoc和maxLoc表示两个相似度对应的位置坐标
+    minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+    cout << "==============>" << minVal << "==============>" << maxVal << "==============>" << minLoc << "==============>" << maxLoc << endl;
+    Point pt1 = Point(minLoc.x, minLoc.y);
+    Point pt2 = Point(minLoc.x + img2.cols, minLoc.y + img2.rows);
+    rectangle(img1, pt1, pt2, Scalar(0, 255, 0), 2);
+    imshow("matchTemplate", img1);
+    waitKey(0);
+}
+
+// 霍夫线检测：必须是二值图，推荐用canny算子对其进行边缘检测之后的图片用来检测
+void hough(){
+    Mat img, gray, dst;
+    img = imread("F:\\picture\\calendar.png");
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+    Canny(gray, dst, 0, 60, 3);
+    // 存放检测出来的线的集合，Vec4f表示包含4个float类型的结构体，[x1,y1,x2,y2]表示一条线段
+    vector<Vec4f> lines;
+    // 第三个参数rho: 表示线段以像素为单位的距离精度，double类型的，推荐用1.0
+    // 第四个参数theta： 线段以弧度为单位的角度精度，推荐用numpy.pi/180 或CV_PI/180
+    // 第五个参数threshod: 累加平面的阈值参数，int类型，超过设定阈值才被检测出线段，值越大，基本上意味着检出的线段越长，检出的线段个数越少。
+    // 根据情况推荐先用100试试
+    // 第六：线段以像素为单位的最小长度
+    // 第七个：同一方向上两条线段判定为一条线段的最大允许间隔（断裂），超过了设定值，则把两条线段当成一条线段，值越大，允许线段上的断裂越大，越有可能检出潜在的直线段
+    HoughLinesP(dst, lines, 1.0, CV_PI / 180, 150, 0, 3);
+    for (size_t i = 0; i < lines.size(); i++) {
+        Vec4f planes = lines[i];     // planes中存了两个点的坐标
+        line(img, Point(planes[0], planes[1]), Point(planes[2], planes[3]), Scalar(0, 0, 255), 2);
+    }
+    imshow("houghLines", img);
+    waitKey(0);
+}
+
+void hough_circle(){
+    Mat img, gray, dst;
+    img = imread("F:\\picture\\circle.png");
+    medianBlur(img, dst, 3);
+    cvtColor(dst, gray, COLOR_BGR2GRAY);
+    vector<Vec3f> planes;
+    /**
+    * 第二个参数 circles是一个包含检测到的圆的信息的向量，向量内第一个元素是圆的横坐标，第二个是纵坐标，第三个是半径大小；
+    * 第三个参数 methodmethod是所使用的圆检测算法，目前只有CV_HOUGH_GRADIENT一个可选；
+    * 第四个参数 dp是累加面与原始图像相比的分辨率的反比参数，dp=2时累计面分辨率是元素图像的一半，宽高都缩减为原来的一半，dp=1时，两者相同。
+    * 第五个参数 minDist定义了两个圆心之间的最小距离；
+    * 第六个参数param1是Canny边缘检测的高阈值，低阈值被自动置为高阈值的一半；
+    * 第七个参数param2是累加平面对是否是圆的判定阈值；
+    * 第八和第九个参数定义了检测到的圆的半径的最小值和最大值；
+    */
+    HoughCircles(gray, planes, CV_HOUGH_GRADIENT, 1, 100, 40, 100, 20, 1000);
+    for (size_t i = 0; i < planes.size(); ++i) {
+        Vec3f circles = planes[i];
+        circle(img, Point(circles[0], circles[1]), circles[2], Scalar(0, 255, 0), 2);
+    }
+    imshow("hough_circle", img);
+    waitKey(0);
+}
+
+void harris(){
+    Mat img, grayImg, norImg, absImg;
+    img = imread("F:\\picture\\check.png");
+    // 创建一个32位float的mat，用来接收cornerHarris方法的返回值
+    Mat dstImg = Mat::zeros(img.size(), CV_32FC1);
+    cvtColor(img, grayImg, COLOR_BGR2GRAY);
+    // 第三个参数blockSize特征值计算矩阵的维数 一般是2；参数4：ksize平移扫过图像的矩阵块；参数5:一般在0.04-0.06之间
+    cornerHarris(grayImg, dstImg, 2, 3, 0.04, BORDER_DEFAULT);
+    // 归一化与转换
+    normalize(dstImg, norImg, 0, 255, NORM_MINMAX, CV_32FC1, Mat());
+    convertScaleAbs(norImg, absImg);
+    Mat resultImg = img.clone();
+    for(int i = 0; i < resultImg.rows; i++){
+        // ptr方法是每一行的首地址指针
+        uchar *currentRow = absImg.ptr(i);
+        for(int j = 0; j < resultImg.cols; j++){
+            int value = (int) *currentRow;
+            if(value > 125){
+                circle(resultImg, Point(j,i), 2, Scalar(0, 255, 0), 2, 8, 0);
+            }
+            currentRow++;
+        }
+    }
+    imshow("harris", resultImg);
+    waitKey(0);
+}
+
+// shi-tomas算法是对harris算法的改进，能更好的检测到角点
+void shi_tomas(){
+    Mat img, grayImg;
+    img = imread("F:\\picture\\buildings.png");
+    cvtColor(img, grayImg, COLOR_BGR2GRAY);
+    // 定义一个含有两个float数据类型的Point的集合，用来接收检测到的角点坐标
+    vector<Point2f> corners;
+    // 参数三：检测到角点的最大数量，如果超过会对其进行排序忽略~~~~参数四：角点的最低质量~~~~参数五：角点之间的距离，超过算两个，不超过算一个
+    goodFeaturesToTrack(grayImg, corners, 1000, 0.05, 10);
+    for (int i = 0; i < corners.size(); ++i) {
+        circle(img, corners[i], 2, Scalar(0, 0, 255), 2);
+    }
+    imshow("shi-tomas", img);
+    waitKey(0);
+}
+
+void sift(){
+    Mat img, grayImg;
+    img = imread("F:\\picture\\buildings.png");
+    // 先创建一个sift
+    Ptr<SIFT> ptr = SIFT::create();
+    vector<KeyPoint> keyPoints;
+    cvtColor(img, grayImg, COLOR_BGR2GRAY);
+    ptr->detect(grayImg, keyPoints, Mat());
+    // DRAW_RICH_KEYPOINTS 是带方向的
+    drawKeypoints(img, keyPoints, img, Scalar(0, 0, 255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+    imshow("sift", img);
+    waitKey(0);
+}
+
+// fast算法原理：若一个像素周围有一定数量的像素与该点像素值不同，则认为其为角点
+void fast(){
+    Mat img;
+    img = imread("F:\\picture\\castle.png");
+    // 参数一：阈值~~~~参数二：非极大值抑制，默认为true
+    Ptr<FastFeatureDetector> ptr = FastFeatureDetector::create(35);
+    vector<KeyPoint> keyPoints;
+    ptr->detect(img, keyPoints, Mat());
+    drawKeypoints(img, keyPoints, img, Scalar(0, 0, 255));
+    imshow("fast", img);
+    waitKey(0);
+}
+
+void orb(){
+    Mat img;
+    img = imread("F:\\picture\\castle.png");
+    Ptr<ORB> ptr = ORB::create(3000);
+    vector<KeyPoint> keyPoints;
+    ptr->detect(img, keyPoints, Mat());
+    drawKeypoints(img, keyPoints, img, Scalar(0, 0, 255));
+    imshow("orb", img);
+    waitKey(0);
+}
